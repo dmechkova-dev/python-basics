@@ -14,52 +14,59 @@ if choice == "Типове данни & Списъци":
     col1, col2 = st.columns(2)
     
     with col1:
-        val = st.text_input("Въведи нещо тук (напр. 5, 3.14, 'Здравей' или [1,2,3]):", "100")
-        guess = st.selectbox("Какъв според теб е типа на това, което въведе?", 
+        val = st.text_input("Въведи нещо (напр. 100, 3.14, 'Здравей' или [1,2,3]):", "100")
+        guess = st.selectbox("Какъв според теб е типа?", 
                             ["Избери...", "String (Текст)", "Integer (Цяло число)", "Float (Дробно число)", "List (Списък)"])
 
     if st.button("Провери моето предположение"):
-        # Опитваме се да разберем какво е въвел потребителят
         user_input = val.strip()
-        
-        # 1. Проверка дали е списък (започва с [ и завършва с ])
+        # Подобрена логика за разпознаване
         if user_input.startswith('[') and user_input.endswith(']'):
             real_type = "list"
-        # 2. Проверка за число (цяло)
         elif user_input.isdigit():
             real_type = "int"
-        # 3. Проверка за дробно число
         elif user_input.replace('.', '', 1).isdigit() and "." in user_input:
             real_type = "float"
-        # 4. Всичко останало е текст
         else:
             real_type = "str"
         
-        type_map = {
-            "str": "String (Текст)", 
-            "int": "Integer (Цяло число)", 
-            "float": "Float (Дробно число)", 
-            "list": "List (Списък)"
-        }
+        type_map = {"str": "String (Текст)", "int": "Integer (Цяло число)", "float": "Float (Дробно число)", "list": "List (Списък)"}
         correct_name = type_map.get(real_type)
         
         if guess == correct_name:
-            st.success(f"✅ Браво! Точно така, '{val}' е {correct_name}.")
+            st.success(f"✅ Браво! '{val}' наистина е {correct_name}.")
         else:
-            st.error(f"❌ Не съвсем. Ти каза '{guess}', но в Python '{val}' се разпознава като {correct_name}.")
+            st.error(f"❌ Грешка. Ти каза '{guess}', но в Python това е {correct_name}.")
+
     st.divider()
-    st.subheader("2. Какво е Списък (List)?")
-    st.write("Списъкът е кутия с много отделения. Използваме квадратни скоби `[]`.")
-    items = st.text_input("Напиши 3 любими плода, разделени със запетая:", "ябълка, банан, портокал")
-    fruit_list = [i.strip() for i in items.split(",")]
-    st.code(f"plodove = {fruit_list}")
     
-    q_list = st.radio("Как ще вземем ПЪРВИЯ елемент от списъка в Python?", ["plodove[1]", "plodove[0]", "plodove[първи]"])
-    if st.button("Провери за списък"):
-        if q_list == "plodove[0]":
-            st.success("Правилно! В Python броенето винаги започва от 0.")
+    # Секция за Списъци и създаване от текст
+    st.subheader("2. Какво е Списък (List)?")
+    st.write("Списъкът е подредена колекция от елементи в квадратни скоби `[]`.")
+    
+    # ТОВА Е НОВАТА ЧАСТ ЗА СЪЗДАВАНЕ НА СПИСЪК ОТ ТЕКСТ:
+    st.info("💡 Знаеш ли, че можеш да направиш списък от обикновен текст?")
+    user_words = st.text_input("Напиши няколко думи, разделени с интервал:", "котка куче папагал")
+    
+    if user_words:
+        generated_list = user_words.split() # Магията става тук
+        st.write("Python превърна твоя текст в този списък:")
+        st.code(generated_list)
+        st.write(f"Типът на резултата вече е: `{type(generated_list).__name__}`")
+        st.write(f"Брой елементи в твоя списък: **{len(generated_list)}**")
+
+    st.divider()
+    
+    # Индексиране (въпросът с плодовете)
+    st.subheader("3. Как намираме елемент в списъка?")
+    st.code("plodove = ['ябълка', 'банан', 'портокал']")
+    q_index = st.radio("На коя позиция (индекс) е 'ябълка'?", ["index 1", "index 0", "index -1"])
+    
+    if st.button("Провери индекса"):
+        if q_index == "index 0":
+            st.success("Точно така! В Python винаги започваме да броим от 0!")
         else:
-            st.info("Опитай пак! Помни, че програмистите броят от нула.")
+            st.warning("Почти! Помни правилото: Програмистите винаги започват от НУЛА.")
 
 # --- ТЕМА 2: МАТЕМАТИКА ---
 elif choice == "Математически операции":
