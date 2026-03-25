@@ -1,4 +1,4 @@
-pip install streamlit
+
 import streamlit as st
 
 st.set_page_config(page_title="Python за 6. клас", page_icon="🐍")
