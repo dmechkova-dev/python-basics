@@ -19,21 +19,34 @@ if choice == "Типове данни & Списъци":
                             ["Избери...", "String (Текст)", "Integer (Цяло число)", "Float (Дробно число)", "List (Списък)"])
 
     if st.button("Провери моето предположение"):
-        # Логика за автоматично разпознаване на типа за целите на упражнението
-        try:
-            parsed_val = eval(val) # Опасно в реални приложения, но супер за учебни цели тук
-            real_type = type(parsed_val).__name__
-        except:
+        # Опитваме се да разберем какво е въвел потребителят
+        user_input = val.strip()
+        
+        # 1. Проверка дали е списък (започва с [ и завършва с ])
+        if user_input.startswith('[') and user_input.endswith(']'):
+            real_type = "list"
+        # 2. Проверка за число (цяло)
+        elif user_input.isdigit():
+            real_type = "int"
+        # 3. Проверка за дробно число
+        elif user_input.replace('.', '', 1).isdigit() and "." in user_input:
+            real_type = "float"
+        # 4. Всичко останало е текст
+        else:
             real_type = "str"
         
-        type_map = {"str": "String (Текст)", "int": "Integer (Цяло число)", "float": "Float (Дробно число)", "list": "List (Списък)"}
-        correct_name = type_map.get(real_type, "String (Текст)")
+        type_map = {
+            "str": "String (Текст)", 
+            "int": "Integer (Цяло число)", 
+            "float": "Float (Дробно число)", 
+            "list": "List (Списък)"
+        }
+        correct_name = type_map.get(real_type)
         
         if guess == correct_name:
-            st.success(f"✅ Браво! Точно така, това е {correct_name}.")
+            st.success(f"✅ Браво! Точно така, '{val}' е {correct_name}.")
         else:
-            st.error(f"❌ Не съвсем. Ти каза '{guess}', но в Python това е '{correct_name}'.")
-
+            st.error(f"❌ Не съвсем. Ти каза '{guess}', но в Python '{val}' се разпознава като {correct_name}.")
     st.divider()
     st.subheader("2. Какво е Списък (List)?")
     st.write("Списъкът е кутия с много отделения. Използваме квадратни скоби `[]`.")
